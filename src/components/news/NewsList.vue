@@ -28,6 +28,7 @@ import {Toast} from "mint-ui"
 		methods:{
 			getNewsList(){
 				this.$http.get("api/getnewslist").then(result=>{
+					console.log(result);
 					if(result.body.status===0){
 						this.newsList = result.body.message;
 						// console.log(result.body.message);

@@ -9,7 +9,7 @@ import moment from "moment"
 import VueResource from 'vue-resource'
 Vue.use(VueResource)
 
-Vue.http.options.root = "http://localhost:5000"
+Vue.http.options.root = "http://www.lovegf.cn:8899"
 
 import { Header,Swipe, SwipeItem,Button} from 'mint-ui';
 import "./lib/mui/css/mui.min.css"
