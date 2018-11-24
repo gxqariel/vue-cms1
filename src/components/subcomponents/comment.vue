@@ -2,8 +2,8 @@
 	<div class="cmt-container">
 		<h3>发表评论</h3>
 		<hr>
-		<textarea placeholder="请输入评论内容，最多120字" maxlength="120"></textarea>
-		<mt-button type="primary" size="large">发表评论</mt-button>
+		<textarea placeholder="请输入评论内容，最多120字" maxlength="120" v-model="msg"></textarea>
+		<mt-button type="primary" size="large" @click.prevent.stop="postComment">发表评论</mt-button>
 		<div class="cmt-list">
 			<div class="cmt-item" v-for="(item,i) in comments" :key="item.id">
 				<div class="cmt-title">第{{i+1}}楼&nbsp;&nbsp;用户：{{item.user_name}}&nbsp;&nbsp;发表时间：{{item.add_time | dateFormat}}</div>
@@ -21,7 +21,8 @@ import {Toast} from "mint-ui"
 		data(){
 			return{
 				pageIndex:1,
-				comments:[]
+				comments:[], 
+				msg:''  // 评论输入的内容
 			}
 		},
 		methods:{
@@ -38,6 +39,22 @@ import {Toast} from "mint-ui"
 			getMore(){
 				this.pageIndex++;
 				this.getComments();
+			},
+			postComment(){
+				if(this.msg.trim().length===0){
+					return Toast("评论内容不能为空！");
+				}
+				this.$http.post("api/postcomment/"+ this.$route.params.id,{content:this.msg.trim()})
+				.then(function(result){
+					console.log(result.body.status);
+					if(result.body.status===0){
+						var cmt = {user_name:'匿名用户',add_time:Date.now(),content:this.msg.trim()};
+						this.comments.unshift(cmt);
+						this.msg='';
+					}else{
+						Toast("提交评论失败")
+					}
+				})
 			}
 		},
 		created(){
