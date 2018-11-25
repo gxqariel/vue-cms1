@@ -1,6 +1,10 @@
 <template>
 	<div class="app-container">
-		<mt-header fixed title="vue-cms"></mt-header>
+		<mt-header fixed title="vue-cms">
+			<span slot="left" @click="goback" v-show="flag">
+				<mt-button icon="back">返回</mt-button>
+			</span>
+		</mt-header>
 		
 		<transition>
 			<router-view></router-view>
@@ -34,7 +38,26 @@
 <script>
 export default {
 	data(){
-		return {}
+		return {
+			flag: false
+		}
+	},
+	created(){
+		this.flag = (this.$route.path === '/home')? false: true;
+	},
+	methods:{
+		goback(){
+			this.$router.go(-1)
+		}
+	},
+	watch:{
+		'$route.path':function(newVal){
+			if(newVal==="/home"){
+				this.flag = false
+			}else{
+				this.flag = true
+			}
+		}
 	}
 }
 </script>

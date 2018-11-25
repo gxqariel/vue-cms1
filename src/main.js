@@ -52,7 +52,6 @@ var store = new Vuex.Store({
 			state.car.some(item => {
 				if (item.id == goodsinfo.id) {
 					item.count += parseInt(goodsinfo.count);
-					console.log(item.count);
 					flag = true;
 					return true;
 				}
@@ -70,9 +69,28 @@ var store = new Vuex.Store({
 					return true
 				}
 			})
-			console.log(state.car);
+			localStorage.setItem('car', JSON.stringify(state.car));
+		},
+		// 购物车删除商品
+		removeFormCar(state,id) {
+			state.car.some((item,i)=>{
+				if (item.id === id) {
+					state.car.splice(i,1)
+					return true;
+				}
+			})
+			localStorage.setItem('car', JSON.stringify(state.car));
+		},
+		//更新购物车商品选中状态
+		updateGoodsSelected(state, info) {
+			state.car.some(item => {
+				if (item.id == info.id) {
+					item.selected = info.selected
+				}
+			})
 			localStorage.setItem('car', JSON.stringify(state.car));
 		}
+
 	},
 	getters: { 
 		// 计算state.car中购物车的商品总数量存于getters，用于HomeContainer的badge中
@@ -83,11 +101,33 @@ var store = new Vuex.Store({
 			})
 			return c;
 		},
-		// 将state.car中购物车每件商品的数量以{id：count}的形式存于getters，用于ShopContainer中传给shopcar_numbox组件
+		// 购物车每件商品的数量以{id：count}的形式存于getters，用于ShopContainer中传给shopcar_numbox组件
 		getGoodsCount(state) {
 			var o = {}
 			state.car.forEach(item => {
 				o[item.id] = item.count
+			})
+			return o
+		},
+		// 商品选中状态以{id:selected}形式存于getters
+		getGoodsSelected(state) {
+			var o = {}
+			state.car.forEach(item => {
+				o[item.id] = item.selected
+			})
+			return o;
+		},
+		// 商品数量和总价
+		getGoodsCountAndAmount(state) {
+			var o ={
+				count: 0,// 勾选的数量
+				amount:0 // 勾选的总价
+			}
+			state.car.some(item => {
+				if(item.selected){
+					o.count += item.count;
+					o.amount += item.count*item.price
+				}
 			})
 			return o
 		}

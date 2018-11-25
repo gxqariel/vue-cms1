@@ -4,7 +4,7 @@
 		<div class="mui-card goods-list" v-for="(item,i) in goodsList" :key="item.id">
 			<div class="mui-card-content">
 				<div class="mui-card-content-inner">
-					<mt-switch></mt-switch>
+					<mt-switch v-model="$store.getters.getGoodsSelected[item.id]"   @change="selectedChanged(item.id,$store.getters.getGoodsSelected[item.id])"></mt-switch>
 					<img src="item.thumb_path" alt="">
 					<div class="info">
 						 <h3>{{item.title}}</h3>
@@ -20,13 +20,20 @@
 		</div>
 		<!-- 商品结算区 -->
 		<div class="mui-card">
-				<div class="mui-card-content">
-					<div class="mui-card-content-inner">
-						这是一个最简单的卡片视图控件；卡片视图常用来显示完整独立的一段信息，比如一篇文章的预览图、作者信息、点赞数量等
+			<div class="mui-card-content">
+				<div class="mui-card-content-inner jiesuan">
+					<div class="left">
+						<p>总计（不含运费）</p>
+						<p>已勾选商品<span class="red">{{$store.getters.getGoodsCountAndAmount.count}}</span>件，总价<span class="red">￥{{$store.getters.getGoodsCountAndAmount.amount}}</span></p>
 					</div>
+					<mt-button type="danger">去结算</mt-button>
 				</div>
 			</div>
+		</div>
+
+
 	</div>
+
 </template>
 
 <script>
@@ -43,15 +50,20 @@
 				var idArr = [];  // 存储商品id的数组
 				this.$store.state.car.forEach(item=>idArr.push(item.id));
 				if(idArr.length<=0)return;
-		
 				this.$http.get("api/goods/getshopcarlist/"+idArr.join(',')).then(result=>{
 					if(result.body.status===0){
 						this.goodsList = result.body.message;
 					}
 				})
 			},
+			// 点击删除
 			remove(id,index){
-				// 点击删除
+				this.goodsList.splice(index,1);
+				this.$store.commit("removeFormCar",id)
+			},
+			// 点击开关，把最新的状态存入store
+			selectedChanged(id,val){
+				this.$store.commit("updateGoodsSelected",{id,selected:val})
 			}
 		},
 		components:{
@@ -93,6 +105,15 @@
 				}
 			}
 		
+		}
+		.jiesuan{
+			display:flex;
+			justify-content: space-between;
+			align-items: center;
+			.red{
+				color: red;
+				font-weight: 700;
+			}
 		}
 	}
 </style>

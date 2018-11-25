@@ -104,7 +104,7 @@
 					id: this.id,
 					count:this.selectedCount,
 					price: this.goodsInfo.sell_price,
-					seletecd: true
+					selected: true
 				}
 				// 调用store中的mutation中的方法
 				this.$store.commit('addToCar',goodsinfo);
