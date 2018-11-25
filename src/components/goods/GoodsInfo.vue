@@ -100,6 +100,14 @@
 			addToShopcar(){
 				this.ballFlag = !this.ballFlag;
 				this.btnFlag = true;
+				var goodsinfo = {
+					id: this.id,
+					count:this.selectedCount,
+					price: this.goodsInfo.sell_price,
+					seletecd: true
+				}
+				// 调用store中的mutation中的方法
+				this.$store.commit('addToCar',goodsinfo);
 			},
 			beforeEnter(el){
 				el.style.transform="translate(0,0)";
@@ -124,7 +132,6 @@
 			},
 			getSelectedCount(count){
 				this.selectedCount = count;
-				console.log("父组件"+count);
 			}
 		},
 		components:{
